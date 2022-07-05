@@ -42,7 +42,7 @@
 								<input type="password" name="password" placeholder="Senha" required />
 								<i class="far fa-eye buttom"></i>
 							</div>
-							<button class="btn primary" type="submit" @click.prevent="login">Login</button>
+							<button class="btn primary" type="submit" @click.prevent="auth">Login</button>
 						</form>
 						<span>
 							<p class="fontSmall">
@@ -59,13 +59,21 @@
 </template>
 
 <script>
-import router from '@/router';
+// import router from '@/router';
+import { useStore } from 'vuex';
 
 export default {
-	name: 'LoginView',
+	name: 'AuthView',
 	setup() {
-		const login = () => router.push({ name: 'campus.home' });
-		return { login };
+		const store = useStore();
+		const auth = () => {
+			store.dispatch('auth', {
+				email: 'hegmann.virgil@example.net',
+				password: 'password',
+				device_name: 'authByVuex',
+			});
+		};
+		return { auth };
 	},
 };
 </script>
