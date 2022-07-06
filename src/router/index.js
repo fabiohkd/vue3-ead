@@ -4,6 +4,7 @@ import MySupports from '@/views/supports/MySupportsView.vue';
 import ModulesAndLessons from '@/views/modules/ModulesAndLessonsView.vue';
 import Auth from '@/views/auth/AuthView.vue';
 import ForgetPassword from '@/views/auth/ForgetPasswordView.vue';
+import ResetPassword from '@/views/auth/ResetPasswordView.vue';
 
 const router = createRouter({
     history: createWebHistory(''),
@@ -38,6 +39,12 @@ const router = createRouter({
             path: '/recuperar-senha',
             name: 'forget.password',
             component: ForgetPassword,
+        },
+        {
+            path: '/reset/:token',
+            name: 'reset.password',
+            component: ResetPassword,
+            props: true,
         },
     ],
 });

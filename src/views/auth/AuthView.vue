@@ -35,14 +35,17 @@
 						<form action="/dist/index.html" method="">
 							<div class="groupForm">
 								<i class="far fa-envelope"></i>
-								<input type="email" name="email" placeholder="Email" required />
+								<input type="email" name="email" placeholder="Email" required v-model="email" />
 							</div>
 							<div class="groupForm">
 								<i class="far fa-key"></i>
-								<input type="password" name="password" placeholder="Senha" required />
+								<input type="password" name="password" placeholder="Senha" required v-model="password" />
 								<i class="far fa-eye buttom"></i>
 							</div>
-							<button class="btn primary" type="submit" @click.prevent="auth">Login</button>
+							<button :class="['btn', 'primary', loading ? 'loading' : '']" type="submit" @click.prevent="auth">
+								<span v-if="loading">Enviando...</span>
+								<span v-else>Login</span>
+							</button>
 						</form>
 						<span>
 							<p class="fontSmall">
@@ -60,20 +63,44 @@
 
 <script>
 // import router from '@/router';
+import { ref } from 'vue';
 import { useStore } from 'vuex';
+import router from '@/router';
+import { notify } from '@kyvg/vue3-notification';
 
 export default {
 	name: 'AuthView',
 	setup() {
 		const store = useStore();
+		const email = ref('');
+		const password = ref('');
+		const loading = ref(false);
 		const auth = () => {
-			store.dispatch('auth', {
-				email: 'hegmann.virgil@example.net',
-				password: 'password',
-				device_name: 'authByVuex',
-			});
+			loading.value = true;
+			store
+				.dispatch('auth', {
+					// 'hegmann.virgil@example.net'
+					email: email.value,
+					password: password.value,
+					device_name: 'authByVuex',
+				})
+				.then(() => router.push({ name: 'campus.home' }))
+				.catch((error) => {
+					let msgError = 'Falha na Autenticação';
+
+					if (error.status == 422) msgError = 'Dados Inválidos';
+					if (error.status == 404) msgError = 'Usuário não Encontrado';
+
+					notify({
+						title: 'Falha de Login',
+						text: msgError,
+						type: 'error',
+						duration: 2200,
+					});
+				})
+				.finally(() => (loading.value = false));
 		};
-		return { auth };
+		return { auth, email, password, loading };
 	},
 };
 </script>
