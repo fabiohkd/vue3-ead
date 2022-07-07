@@ -1,5 +1,5 @@
 <template>
-	<notifications close-on-click="true" width="350" />
+	<notifications close-on-click width="350" />
 	<RouterView />
 </template>
 
